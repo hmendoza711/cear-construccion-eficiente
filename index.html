@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth bg-[#0b0e13]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEAR | Construcción Eficiente Argentina — Obras llave en mano</title>
+    <meta name="description" content="CEAR — Construcción Eficiente Argentina. Viviendas llave en mano, naves industriales, locales comerciales y ampliaciones. Cuadrillas propias y dirección técnica en cada obra.">
+    <meta name="theme-color" content="#0b0e13">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/cearLogoCorporativo.png">
+
+    <!-- Open Graph: preview al compartir el link por WhatsApp / redes -->
+    <!-- [AL PUBLICAR: reemplazar las URLs relativas de og:url y og:image por las absolutas del dominio final, ej. https://cear.com.ar/...] -->
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_AR">
+    <meta property="og:title" content="CEAR | Construcción Eficiente Argentina — Obras llave en mano">
+    <meta property="og:description" content="Viviendas llave en mano, naves industriales y locales comerciales en Rosario, Funes y zona. Cuadrillas propias y dirección técnica en cada obra.">
+    <meta property="og:image" content="images/obra-01-imagenPrincipalBody.jpg.png">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Fuentes: Manrope (estructura) + Playfair Display (acentos editoriales) -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;1,400;1,500&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        // Paleta sobre azul noche, derivada del logo CEAR
+                        ink: {
+                            950: '#0b0e13',
+                            900: '#121723',
+                            800: '#222a39',
+                            700: '#3e4859',
+                            600: '#586374',
+                            500: '#75808f',
+                            400: '#96a0ae',
+                            200: '#e3e7ed',
+                        },
+                        teal:  '#52b9a2',  // Verde agua del logo (acento principal)
+                        azul:  '#2e7eb8',  // Azul medio del logo
+                        navy:  '#1e55a4',  // Azul oscuro del logo
+                        whatsapp: '#25D366'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::selection { background: #52b9a2; color: #0b0e13; }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Grilla arquitectónica de fondo */
+        .bg-architect-grid {
+            background-image: linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 20vw 100%;
+        }
+
+        /* Tratamiento fotográfico */
+        .img-arch {
+            filter: grayscale(35%) contrast(1.08) brightness(0.88);
+            transition: all .7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .group:hover .img-arch {
+            filter: grayscale(0%) contrast(1) brightness(1);
+            transform: scale(1.04);
+        }
+
+        /* Animación de aparición al scroll */
+        .reveal { opacity: 0; transform: translateY(28px); transition: opacity .9s ease, transform .9s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: .15s; }
+        .reveal-delay-2 { transition-delay: .3s; }
+        .reveal-delay-3 { transition-delay: .45s; }
+
+        /* Cinta deslizante (marquee) */
+        @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .marquee-track { animation: marquee 28s linear infinite; }
+
+        /* Carrusel cinemático: parallax y foco manejados por JS */
+        #obras-carousel img { -webkit-user-drag: none; user-select: none; }
+        .obra-card { will-change: transform, opacity; }
+        .obra-card img { will-change: transform; }
+
+        /* Proceso: línea que se dibuja y pasos que se encienden */
+        .proceso-linea-wrap { position: relative; height: 1px; margin-bottom: 2.5rem; }
+        .proceso-linea-bg   { position: absolute; inset: 0; background: #222a39; }
+        .proceso-linea-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0;
+                              background: #52b9a2;
+                              transition: width 2s cubic-bezier(0.25, 1, 0.5, 1); }
+
+        .proceso-step { opacity: 0; transform: translateY(16px);
+                        transition: opacity .4s ease, transform .4s ease; }
+        .proceso-step.lit { opacity: 1; transform: translateY(0); }
+
+        .proceso-step .paso-num   { color: #1a2233; transition: color .4s ease; }
+        .proceso-step.lit .paso-num { color: #52b9a2; }
+
+        .proceso-step .paso-titulo { color: #1a2233; transition: color .4s .1s ease; }
+        .proceso-step.lit .paso-titulo { color: #e3e7ed; }
+
+        .proceso-step .paso-texto  { color: #1a2233; transition: color .4s .2s ease; }
+        .proceso-step.lit .paso-texto  { color: #75808f; }
+
+        /* Hover: el paso completo se tiñe de verde agua (solo una vez encendido) */
+        .proceso-step.lit:hover .paso-titulo { color: #52b9a2; transition: color .3s ease; }
+        .proceso-step.lit:hover .paso-texto  { color: rgba(82, 185, 162, 0.75); transition: color .3s ease; }
+
+        /* Logo */
+        .logo-cear { display: block; }
+
+        /* Línea decorativa bajo títulos */
+        .title-rule::after {
+            content: ''; display: block; width: 3rem; height: 1px;
+            background: #52b9a2; margin-top: 1.25rem;
+        }
+    </style>
+</head>
+<body class="font-sans text-ink-400 bg-ink-950 antialiased relative">
+
+    <!-- Grilla de fondo fija -->
+    <div class="fixed inset-0 pointer-events-none bg-architect-grid z-0"></div>
+
+    <!-- ============================================ -->
+    <!-- NAVBAR -->
+    <!-- ============================================ -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 border-b border-transparent">
+        <div class="max-w-[90rem] mx-auto px-6 md:px-12">
+            <div class="flex justify-between items-center h-24">
+                <a href="#">
+                    <img src="images/cearLogoCorporativo.png" alt="CEAR — Construcción Eficiente Argentina" class="logo-cear h-16 w-auto object-contain">
+                </a>
+
+                <!-- Menú desktop -->
+                <div class="hidden md:flex items-center gap-12">
+                    <a href="#servicios" class="text-xs tracking-[0.2em] uppercase text-teal hover:text-ink-200 transition-colors">Servicios</a>
+                    <a href="#obras" class="text-xs tracking-[0.2em] uppercase text-teal hover:text-ink-200 transition-colors">Obras</a>
+                    <a href="#proceso" class="text-xs tracking-[0.2em] uppercase text-teal hover:text-ink-200 transition-colors">Proceso</a>
+                    <a href="#empresa" class="text-xs tracking-[0.2em] uppercase text-teal hover:text-ink-200 transition-colors">Empresa</a>
+                </div>
+
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="https://www.instagram.com/cear.constructora" target="_blank" rel="noopener" aria-label="Instagram de CEAR" class="text-ink-500 hover:text-teal transition-colors">
+                        <i class="fa-brands fa-instagram text-lg"></i>
+                    </a>
+                    <a href="#contacto" class="text-xs tracking-[0.2em] uppercase text-teal border-b border-teal/30 pb-1 hover:border-teal transition-colors">
+                        Iniciar proyecto
+                    </a>
+                </div>
+
+                <!-- Botón móvil -->
+                <button id="mobile-menu-btn" class="md:hidden text-ink-200" aria-label="Menú">
+                    <span class="block w-7 h-px bg-current mb-2"></span>
+                    <span class="block w-7 h-px bg-current"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Menú móvil -->
+        <div id="mobile-menu" class="hidden md:hidden bg-ink-950/98 backdrop-blur border-b border-ink-800 absolute w-full top-24 left-0">
+            <div class="px-6 py-8 space-y-6">
+                <a href="#servicios" class="block text-sm tracking-[0.2em] uppercase text-teal">Servicios</a>
+                <a href="#obras" class="block text-sm tracking-[0.2em] uppercase text-teal">Obras</a>
+                <a href="#proceso" class="block text-sm tracking-[0.2em] uppercase text-teal">Proceso</a>
+                <a href="#empresa" class="block text-sm tracking-[0.2em] uppercase text-teal">Empresa</a>
+                <a href="#contacto" class="block text-sm tracking-[0.2em] uppercase text-teal pt-4 border-t border-ink-800">Iniciar proyecto</a>
+                <a href="https://www.instagram.com/cear.constructora" target="_blank" rel="noopener" class="flex items-center gap-3 text-sm tracking-[0.2em] uppercase text-ink-500 pt-2">
+                    <i class="fa-brands fa-instagram text-base"></i> Instagram
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================ -->
+    <!-- HERO -->
+    <!-- ============================================ -->
+    <section class="relative min-h-screen flex items-center pt-24 overflow-hidden z-10">
+        <div class="max-w-[90rem] mx-auto px-6 md:px-12 w-full grid md:grid-cols-2 gap-12 items-center">
+
+            <!-- Texto -->
+            <div class="reveal visible">
+                <p class="tracking-[0.35em] uppercase text-[10px] sm:text-xs mb-8 flex items-center gap-4 text-teal">
+                    <span class="w-10 h-px bg-teal"></span> Construcción Eficiente Argentina
+                </p>
+
+                <h1 class="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl text-ink-200 font-extralight leading-[1.05] tracking-tight mb-8">
+                    Construimos<br>
+                    <span class="font-serif italic text-teal">eficiencia.</span>
+                </h1>
+
+                <!-- Auditoría UX: Filtro geográfico inyectado en el Hero para cualificación de leads -->
+                <p class="text-base md:text-lg font-light max-w-md mb-12 leading-relaxed">
+                    En CEAR ejecutamos viviendas, naves industriales y locales comerciales
+                    de punta a punta en <span class="text-ink-200 font-medium">Rosario, Funes y su área metropolitana</span>. Plazos, materiales y dirección técnica: todo bajo una sola responsabilidad.
+                </p>
+
+                <div class="flex flex-wrap items-center gap-8">
+                    <a href="https://wa.me/549XXXXXXXXXX" class="inline-flex items-center gap-4 group">
+                        <span class="relative w-14 h-14 rounded-full border border-ink-800 flex items-center justify-center group-hover:bg-whatsapp group-hover:border-whatsapp transition-all duration-300">
+                            <span class="absolute inset-0 rounded-full bg-whatsapp/25 animate-ping"></span>
+                            <i class="fa-brands fa-whatsapp text-xl text-whatsapp group-hover:text-ink-950 relative z-10 transition-colors"></i>
+                        </span>
+                        <span class="text-xs tracking-[0.2em] uppercase text-ink-200 font-medium group-hover:text-whatsapp transition-colors">Cotizá tu obra</span>
+                    </a>
+                    <a href="#obras" class="text-xs tracking-[0.2em] uppercase border-b border-ink-800 pb-1 hover:text-ink-200 hover:border-ink-400 transition-colors">Ver obras</a>
+                </div>
+            </div>
+
+            <!-- Imagen -->
+            <div class="aspect-[16/9] md:aspect-auto md:h-[60vh] relative group overflow-hidden reveal visible reveal-delay-1">
+                <!-- [REEMPLAZAR por foto de obra insignia del cliente] -->
+                <img src="images/obra-01-imagenPrincipalBody.jpg.png"
+                     alt="Vivienda construida por CEAR" class="w-full h-full object-cover img-arch">
+                <div class="absolute bottom-6 left-6 text-[10px] tracking-[0.25em] text-ink-950 uppercase bg-white/70 px-3 py-1">
+                    Obra 01 / Vivienda entregada llave en mano
+                </div>
+                <!-- Marcos decorativos en teal -->
+                <div class="absolute top-4 right-4 w-16 h-16 border-t border-r border-teal/60 pointer-events-none"></div>
+                <div class="absolute bottom-4 left-4 w-16 h-16 border-b border-l border-teal/60 pointer-events-none"></div>
+            </div>
+        </div>
+
+        <!-- Indicador de scroll -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 text-ink-500">
+            <span class="text-[9px] tracking-[0.3em] uppercase">Scroll</span>
+            <span class="w-px h-10 bg-gradient-to-b from-teal to-transparent"></span>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- CINTA MARQUEE -->
+    <!-- ============================================ -->
+    <div class="relative z-10 border-y border-ink-800 bg-ink-900/60 backdrop-blur-sm overflow-hidden py-5">
+        <div class="marquee-track flex whitespace-nowrap gap-12 text-[11px] tracking-[0.35em] uppercase text-ink-500 w-max">
+            <span>Llave en mano</span><span class="text-teal">●</span>
+            <span>Naves industriales</span><span class="text-azul">●</span>
+            <span>Viviendas premium</span><span class="text-navy">●</span>
+            <span>Locales comerciales</span><span class="text-teal">●</span>
+            <span>Ampliaciones</span><span class="text-azul">●</span>
+            <span>Dirección técnica</span><span class="text-navy">●</span>
+            <span>Llave en mano</span><span class="text-teal">●</span>
+            <span>Naves industriales</span><span class="text-azul">●</span>
+            <span>Viviendas premium</span><span class="text-navy">●</span>
+            <span>Locales comerciales</span><span class="text-teal">●</span>
+            <span>Ampliaciones</span><span class="text-azul">●</span>
+            <span>Dirección técnica</span><span class="text-navy">●</span>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- ESTADÍSTICAS -->
+    <!-- ============================================ -->
+    <section class="py-24 z-10 relative">
+        <div class="max-w-[90rem] mx-auto px-6 md:px-12 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+            <!-- [AJUSTAR números reales del cliente] -->
+            <div class="reveal">
+                <p class="text-5xl md:text-6xl font-extralight text-ink-200"><span class="counter" data-target="20">0</span><span class="text-teal">+</span></p>
+                <p class="text-[10px] tracking-[0.3em] uppercase text-ink-500 mt-3">Años de trayectoria</p>
+            </div>
+            <div class="reveal reveal-delay-1">
+                <p class="text-5xl md:text-6xl font-extralight text-ink-200"><span class="counter" data-target="120">0</span><span class="text-teal">+</span></p>
+                <p class="text-[10px] tracking-[0.3em] uppercase text-ink-500 mt-3">Obras entregadas</p>
+            </div>
+            <div class="reveal reveal-delay-2">
+                <p class="text-5xl md:text-6xl font-extralight text-ink-200"><span class="counter" data-target="85">0</span><span class="text-teal">k</span></p>
+                <p class="text-[10px] tracking-[0.3em] uppercase text-ink-500 mt-3">m² construidos</p>
+            </div>
+            <div class="reveal reveal-delay-3">
+                <p class="text-5xl md:text-6xl font-extralight text-ink-200"><span class="counter" data-target="100">0</span><span class="text-teal">%</span></p>
+                <p class="text-[10px] tracking-[0.3em] uppercase text-ink-500 mt-3">Entregas en plazo</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SERVICIOS -->
+    <!-- ============================================ -->
+    <section id="servicios" class="py-24 z-10 relative border-t border-ink-900">
+        <div class="max-w-[90rem] mx-auto px-6 md:px-12">
+            <div class="flex flex-col md:flex-row md:justify-between items-start md:items-end gap-8 mb-16 reveal">
+                <div>
+                    <p class="text-teal tracking-[0.3em] uppercase text-[10px] mb-4">Servicios</p>
+                    <h2 class="text-4xl md:text-5xl text-ink-200 font-extralight">Capacidad <span class="font-serif italic text-teal">operativa.</span></h2>
+                </div>
+                <p class="font-light max-w-md text-sm leading-relaxed text-teal">
+                    Cuadrillas propias, logística de materiales y supervisión técnica permanente.
+                    Centralizamos los rubros críticos para garantizar plazo y calidad.
+                </p>
+            </div>
+
+            <!-- Auditoría: Diseño tipográfico brutalista/técnico, números a la izquierda, mayúsculas estructuradas -->
+            <div class="border-t border-ink-800 reveal">
+                <!-- Item 1 -->
+                <a href="#contacto" class="group border-b border-ink-800 py-8 md:py-10 flex flex-col lg:flex-row lg:items-center justify-between hover:bg-ink-900/40 transition-colors cursor-pointer px-4 -mx-4 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-ink-900 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-0"></div>
+                    <div class="flex items-center gap-6 md:gap-10 relative z-10 mb-4 lg:mb-0">
+                        <span class="text-sm md:text-base font-serif italic text-teal w-6">01</span>
+                        <h3 class="text-2xl md:text-4xl font-light text-ink-200 group-hover:text-white group-hover:translate-x-2 transition-all duration-300 uppercase tracking-widest">Casas llave en mano</h3>
+                    </div>
+                    <div class="relative z-10 lg:w-[35%]">
+                        <p class="text-sm font-light text-ink-500 group-hover:text-teal transition-colors duration-300">Construcción integral en barrios cerrados. Del cimiento a la pintura final.</p>
+                    </div>
+                </a>
+                <!-- Item 2 -->
+                <a href="#contacto" class="group border-b border-ink-800 py-8 md:py-10 flex flex-col lg:flex-row lg:items-center justify-between hover:bg-ink-900/40 transition-colors cursor-pointer px-4 -mx-4 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-ink-900 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-0"></div>
+                    <div class="flex items-center gap-6 md:gap-10 relative z-10 mb-4 lg:mb-0">
+                        <span class="text-sm md:text-base font-serif italic text-teal w-6">02</span>
+                        <h3 class="text-2xl md:text-4xl font-light text-ink-200 group-hover:text-white group-hover:translate-x-2 transition-all duration-300 uppercase tracking-widest">Naves y galpones</h3>
+                    </div>
+                    <div class="relative z-10 lg:w-[35%]">
+                        <p class="text-sm font-light text-ink-500 group-hover:text-teal transition-colors duration-300">Estructuras metálicas, pisos llaneados y cerramientos para industria.</p>
+                    </div>
+                </a>
+                <!-- Item 3 -->
+                <a href="#contacto" class="group border-b border-ink-800 py-8 md:py-10 flex flex-col lg:flex-row lg:items-center justify-between hover:bg-ink-900/40 transition-colors cursor-pointer px-4 -mx-4 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-ink-900 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-0"></div>
+                    <div class="flex items-center gap-6 md:gap-10 relative z-10 mb-4 lg:mb-0">
+                        <span class="text-sm md:text-base font-serif italic text-teal w-6">03</span>
+                        <h3 class="text-2xl md:text-4xl font-light text-ink-200 group-hover:text-white group-hover:translate-x-2 transition-all duration-300 uppercase tracking-widest">Locales comerciales</h3>
+                    </div>
+                    <div class="relative z-10 lg:w-[35%]">
+                        <p class="text-sm font-light text-ink-500 group-hover:text-teal transition-colors duration-300">Ejecución rápida para retail y gastronomía, minimizando el lucro cesante.</p>
+                    </div>
+                </a>
+                <!-- Item 4 -->
+                <a href="#contacto" class="group border-b border-ink-800 py-8 md:py-10 flex flex-col lg:flex-row lg:items-center justify-between hover:bg-ink-900/40 transition-colors cursor-pointer px-4 -mx-4 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-ink-900 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-0"></div>
+                    <div class="flex items-center gap-6 md:gap-10 relative z-10 mb-4 lg:mb-0">
+                        <span class="text-sm md:text-base font-serif italic text-teal w-6">04</span>
+                        <h3 class="text-2xl md:text-4xl font-light text-ink-200 group-hover:text-white group-hover:translate-x-2 transition-all duration-300 uppercase tracking-widest">Ampliaciones y reformas</h3>
+                    </div>
+                    <div class="relative z-10 lg:w-[35%]">
+                        <p class="text-sm font-light text-ink-500 group-hover:text-teal transition-colors duration-300">Reformas estructurales, quinchos y anexos con supervisión permanente.</p>
+                    </div>
+                </a>
+                <!-- Item 5 -->
+                <a href="#contacto" class="group border-b border-ink-800 py-8 md:py-10 flex flex-col lg:flex-row lg:items-center justify-between hover:bg-ink-900/40 transition-colors cursor-pointer px-4 -mx-4 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-ink-900 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-0"></div>
+                    <div class="flex items-center gap-6 md:gap-10 relative z-10 mb-4 lg:mb-0">
+                        <span class="text-sm md:text-base font-serif italic text-teal w-6">05</span>
+                        <h3 class="text-2xl md:text-4xl font-light text-ink-200 group-hover:text-white group-hover:translate-x-2 transition-all duration-300 uppercase tracking-widest">Proyecto y permisos</h3>
+                    </div>
+                    <div class="relative z-10 lg:w-[35%]">
+                        <p class="text-sm font-light text-ink-500 group-hover:text-teal transition-colors duration-300">Planos, cálculo estructural, gestión municipal y aprobaciones.</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Auditoría: Botón CTA centrado, de alto contraste visual para romper el patrón de lectura -->
+            <div class="mt-20 flex justify-center reveal">
+                <a href="#contacto" class="inline-flex items-center justify-center gap-4 border border-teal text-teal px-12 py-5 text-xs sm:text-sm tracking-[0.2em] uppercase font-bold hover:bg-teal hover:text-ink-950 transition-all duration-300 shadow-[0_0_20px_rgba(82,185,162,0.15)] hover:shadow-[0_0_30px_rgba(82,185,162,0.35)]">
+                    Solicitar presupuesto de obra <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- OBRAS / CARRUSEL -->
+    <!-- ============================================ -->
+    <section id="obras" class="py-32 z-10 relative bg-[#090c10]">
+        <div class="max-w-[90rem] mx-auto px-6 md:px-12 mb-16 reveal">
+            <p class="text-teal tracking-[0.3em] uppercase text-[10px] mb-4 text-center">Portfolio</p>
+            <div class="flex items-center justify-center gap-8">
+                <button id="prev-obra" aria-label="Anterior" class="w-11 h-11 border border-ink-800 rounded-full flex items-center justify-center hover:bg-teal hover:border-teal hover:text-ink-950 transition-colors shrink-0">
+                    <i class="fa-solid fa-arrow-left text-sm"></i>
+                </button>
+                <h2 class="text-4xl md:text-5xl text-ink-200 font-extralight text-center">Obras <span class="font-serif italic text-teal">destacadas.</span></h2>
+                <button id="next-obra" aria-label="Siguiente" class="w-11 h-11 border border-ink-800 rounded-full flex items-center justify-center hover:bg-teal hover:border-teal hover:text-ink-950 transition-colors shrink-0">
+                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="max-w-[90rem] mx-auto pl-6 md:pl-12">
+            <!-- El snap CSS queda solo para táctil; en desktop el JS lo quita y usa snap magnético propio -->
+            <div id="obras-carousel" class="flex gap-8 md:gap-12 overflow-x-auto snap-x snap-mandatory hide-scrollbar pb-12 pr-6 md:pr-12 cursor-grab active:cursor-grabbing select-none">
+
+                <!-- [REEMPLAZAR las 6 tarjetas con obras reales del cliente] -->
+                <div class="obra-card snap-start flex-none w-[78vw] md:w-[42vw] lg:w-[28vw] group">
+                    <div class="aspect-[16/9] overflow-hidden mb-6 bg-ink-900">
+                        <img src="images/obra-01-vivienda.jpg.png" class="w-full h-full object-cover img-arch" alt="Vivienda residencial">
+                    </div>
+                    <p class="text-[10px] tracking-[0.2em] text-teal uppercase mb-2">01 / Vivienda unifamiliar</p>
+                    <h4 class="text-xl text-ink-200 font-light mb-2">Residencia Lote 14</h4>
+                    <p class="text-sm font-light mb-4">250 m² · Hormigón visto y grandes luces.</p>
+                    <a href="#contacto" class="text-xs tracking-[0.1em] text-ink-200 hover:text-teal underline decoration-ink-800 underline-offset-4 transition-colors">Cotizar una similar</a>
+                </div>
+
+                <div class="obra-card snap-start flex-none w-[78vw] md:w-[42vw] lg:w-[28vw] group">
+                    <div class="aspect-[16/9] overflow-hidden mb-6 bg-ink-900">
+                        <!-- Auditoría: Se reemplazó el enlace caído por un asset industrial estable -->
+                        <img src="images/obra-01-galpon.jpg.png" class="w-full h-full object-cover img-arch" alt="Nave industrial">
+                    </div>
+                    <p class="text-[10px] tracking-[0.2em] text-teal uppercase mb-2">02 / Industrial</p>
+                    <h4 class="text-xl text-ink-200 font-light mb-2">Nave logística Zona Sur</h4>
+                    <p class="text-sm font-light mb-4">1.500 m² · Alma llena y piso llaneado.</p>
+                    <a href="#contacto" class="text-xs tracking-[0.1em] text-ink-200 hover:text-teal underline decoration-ink-800 underline-offset-4 transition-colors">Consultar por galpones</a>
+                </div>
+
+                <div class="obra-card snap-start flex-none w-[78vw] md:w-[42vw] lg:w-[28vw] group">
+                    <div class="aspect-[16/9] overflow-hidden mb-6 bg-ink-900">
+                        <img src="images/obra-01-obra.jpg.png" class="w-full h-full object-cover img-arch" alt="Obra en ejecución">
+                    </div>
+                    <p class="text-[10px] tracking-[0.2em] text-teal uppercase mb-2">03 / Ampliación</p>
+                    <h4 class="text-xl text-ink-200 font-light mb-2">Anexo planta alta</h4>
+                    <p class="text-sm font-light mb-4">120 m² · Estructura metálica liviana.</p>
+                    <a href="#contacto" class="text-xs tracking-[0.1em] text-ink-200 hover:text-teal underline decoration-ink-800 underline-offset-4 transition-colors">Cotizar ampliación</a>
+                </div>
+
+                <div class="obra-card snap-start flex-none w-[78vw] md:w-[42vw] lg:w-[28vw] group">
+                    <div class="aspect-[16/9] overflow-hidden mb-6 bg-ink-900">
+                        <img src="images/obra-01-localComercial.jpg.png" class="w-full h-full object-cover img-arch" alt="Local comercial">
+                    </div>
+                    <p class="text-[10px] tracking-[0.2em] text-teal uppercase mb-2">04 / Comercial</p>
+                    <h4 class="text-xl text-ink-200 font-light mb-2">Local gastronómico</h4>
+                    <p class="text-sm font-light mb-4">350 m² · Perfilería vista y piel de vidrio.</p>
+                    <a href="#contacto" class="text-xs tracking-[0.1em] text-ink-200 hover:text-teal underline decoration-ink-800 underline-offset-4 transition-colors">Proyectar local</a>
+                </div>
+
+                <div class="obra-card snap-start flex-none w-[78vw] md:w-[42vw] lg:w-[28vw] group">
+                    <div class="aspect-[16/9] overflow-hidden mb-6 bg-ink-900">
+                        <img src="images/obra-02-galpon.jpg.png" class="w-full h-full object-cover img-arch" alt="Galpón industrial">
+                    </div>
+                    <p class="text-[10px] tracking-[0.2em] text-teal uppercase mb-2">05 / Premium</p>
+                    <h4 class="text-xl text-ink-200 font-light mb-2">Casa de autor — B° cerrado</h4>
+                    <p class="text-sm font-light mb-4">450 m² · Losa vista, galería en voladizo.</p>
+                    <a href="#contacto" class="text-xs tracking-[0.1em] text-ink-200 hover:text-teal underline decoration-ink-800 underline-offset-4 transition-colors">Agendar visita a obra</a>
+                </div>
+
+                <div class="obra-card snap-start flex-none w-[78vw] md:w-[42vw] lg:w-[28vw] group">
+                    <div class="aspect-[16/9] overflow-hidden mb-6 bg-ink-900">
+                        <img src="images/obra-03-galpon.jpg.png" class="w-full h-full object-cover img-arch" alt="Galpón industrial">
+                    </div>
+                    <p class="text-[10px] tracking-[0.2em] text-teal uppercase mb-2">06 / Inversión</p>
+                    <h4 class="text-xl text-ink-200 font-light mb-2">Housing — 6 unidades</h4>
+                    <p class="text-sm font-light mb-4">Complejo llave en mano para desarrolladores.</p>
+                    <a href="#contacto" class="text-xs tracking-[0.1em] text-ink-200 hover:text-teal underline decoration-ink-800 underline-offset-4 transition-colors">Cotizar desarrollo</a>
+                </div>
+
+            </div>
+            <!-- Progreso del carrusel -->
+            <div class="flex items-center gap-6 mt-2 pr-6 md:pr-12">
+                <span id="obras-counter" class="text-[10px] tracking-[0.3em] uppercase text-ink-500 tabular-nums whitespace-nowrap">01 / 06</span>
+                <div class="flex-1 h-px bg-ink-800 relative">
+                    <div id="obras-progress" class="absolute left-0 top-0 h-full bg-teal" style="width:0%"></div>
+                </div>
+                <span class="md:hidden text-[10px] tracking-[0.2em] uppercase text-ink-500">Deslizar</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- PROCESO DE OBRA -->
+    <!-- ============================================ -->
+    <section id="proceso" class="py-32 z-10 relative border-t border-ink-900">
+        <div class="max-w-[90rem] mx-auto px-6 md:px-12">
+            <div class="mb-20 reveal">
+                <p class="text-teal tracking-[0.3em] uppercase text-[10px] mb-4">Metodología</p>
+                <h2 class="text-4xl md:text-5xl text-ink-200 font-extralight">Así trabajamos <span class="font-serif italic text-teal">tu obra.</span></h2>
+            </div>
+
+            <!-- Línea animada -->
+            <div class="proceso-linea-wrap">
+                <div class="proceso-linea-bg"></div>
+                <div class="proceso-linea-fill" id="proceso-linea"></div>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-10">
+                <div class="proceso-step pt-8">
+                    <span class="paso-num font-serif italic text-4xl">01</span>
+                    <h3 class="paso-titulo font-light text-xl mt-6 mb-3">Reunión técnica</h3>
+                    <p class="paso-texto text-sm font-light leading-relaxed">Visitamos tu terreno o proyecto. Relevamos necesidades, plazos y presupuesto disponible.</p>
+                </div>
+                <div class="proceso-step pt-8">
+                    <span class="paso-num font-serif italic text-4xl">02</span>
+                    <h3 class="paso-titulo font-light text-xl mt-6 mb-3">Proyecto y cómputo</h3>
+                    <p class="paso-texto text-sm font-light leading-relaxed">Planos, cálculo estructural y cómputo métrico exacto. Contrato llave en mano sin sorpresas.</p>
+                </div>
+                <div class="proceso-step pt-8">
+                    <span class="paso-num font-serif italic text-4xl">03</span>
+                    <h3 class="paso-titulo font-light text-xl mt-6 mb-3">Ejecución</h3>
+                    <p class="paso-texto text-sm font-light leading-relaxed">Cuadrillas propias y dirección de obra permanente. Reportes de avance semanales con fotos.</p>
+                </div>
+                <div class="proceso-step pt-8">
+                    <span class="paso-num font-serif italic text-4xl">04</span>
+                    <h3 class="paso-titulo font-light text-xl mt-6 mb-3">Entrega</h3>
+                    <p class="paso-texto text-sm font-light leading-relaxed">Obra terminada, planos conforme y garantía. Entrás con la llave, nada más.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- LA EMPRESA -->
+    <!-- ============================================ -->
+    <section id="empresa" class="py-32 z-10 relative bg-[#090c10]">
+        <div class="max-w-[90rem] mx-auto px-6 md:px-12 grid lg:grid-cols-2 gap-16 items-center">
+            <div class="reveal">
+                <h2 class="text-4xl md:text-5xl text-ink-200 font-extralight leading-tight mb-8">
+                    Eficiencia no es velocidad:<br><span class="font-serif italic text-teal">es no desperdiciar.</span>
+                </h2>
+                <!-- Auditoría UX: Nodos de inversión explícitos en lugar del genérico "alrededores" -->
+                <p class="font-light leading-relaxed mb-6 max-w-lg">
+                    <!-- [TEXTO REAL del cliente: historia, zona, diferencial] -->
+                    CEAR — Construcción Eficiente Argentina — nace de la obra misma: somos
+                    constructores antes que administradores. Con capacidad operativa para <strong>Rosario, Funes, Roldán y el cordón industrial</strong>, contamos con cuadrillas propias, logística
+                    de materiales centralizada y un director técnico presente en cada etapa.
+                </p>
+                <p class="font-light leading-relaxed mb-10 max-w-lg">
+                    Eso nos permite firmar plazos y cumplirlos: el cliente trata con un solo
+                    responsable desde el primer plano hasta la entrega de llaves.
+                </p>
+                <ul class="space-y-4 text-sm font-light">
+                    <li class="flex items-center gap-4"><span class="w-6 h-px bg-teal"></span> Dirección técnica matriculada</li>
+                    <li class="flex items-center gap-4"><span class="w-6 h-px bg-teal"></span> Contratos llave en mano con plazo garantizado</li>
+                    <li class="flex items-center gap-4"><span class="w-6 h-px bg-teal"></span> Reportes de avance semanales</li>
+                </ul>
+            </div>
+
+            <!-- Logo derecha -->
+            <div class="reveal reveal-delay-1 flex items-center justify-center">
+                <div class="relative inline-block w-full max-w-sm md:max-w-md">
+                    <img src="images/cearLogoCorporativo.png" alt="CEAR" class="logo-cear w-full object-contain">
+                    <div class="absolute" style="bottom:8%;right:0;width:13%;height:11%;background:#090c10"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- TESTIMONIOS -->
+    <!-- ============================================ -->
+    <section class="py-32 z-10 relative border-t border-ink-900">
+        <div class="max-w-[90rem] mx-auto px-6 md:px-12">
+            <div class="mb-16 reveal">
+                <p class="text-teal tracking-[0.3em] uppercase text-[10px] mb-4">Clientes</p>
+                <h2 class="text-4xl md:text-5xl text-ink-200 font-extralight">Lo que dicen <span class="font-serif italic text-teal">de CEAR.</span></h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- [REEMPLAZAR por testimonios reales] -->
+                <blockquote class="reveal bg-ink-900/40 border border-ink-800 p-8 flex flex-col">
+                    <div class="flex gap-1 mb-6">
+                        <i class="fa-solid fa-star text-teal text-xs"></i><i class="fa-solid fa-star text-teal text-xs"></i><i class="fa-solid fa-star text-teal text-xs"></i><i class="fa-solid fa-star text-teal text-xs"></i><i class="fa-solid fa-star text-teal text-xs"></i>
+                    </div>
+                    <p class="font-serif italic text-lg text-ink-200 leading-relaxed mb-8 flex-1">"Entregaron la casa el día que decía el contrato. No conocía eso en la construcción."</p>
+                    <footer class="flex items-center gap-4 pt-6 border-t border-ink-800">
+                        <div class="w-8 h-8 rounded-full bg-teal/20 border border-teal/30 flex items-center justify-center text-teal text-xs font-medium">MG</div>
+                        <span class="text-xs tracking-[0.15em] uppercase text-ink-500">M. González — Vivienda 250 m²</span>
+                    </footer>
+                </blockquote>
+                <blockquote class="reveal reveal-delay-1 bg-ink-900/40 border border-ink-800 p-8 flex flex-col">
+                    <div class="flex gap-1 mb-6">
+                        <i class="fa-solid fa-star text-teal text-xs"></i><i class="fa-solid fa-star text-teal text-xs"></i><i class="fa-solid fa-star text-teal text-xs"></i><i class="fa-solid fa-star text-teal text-xs"></i><i class="fa-solid fa-star text-teal text-xs"></i>
+                    </div>
+                    <p class="font-serif italic text-lg text-ink-200 leading-relaxed mb-8 flex-1">"El reporte semanal con fotos nos dio tranquilidad total durante toda la nave."</p>
+                    <footer class="flex items-center gap-4 pt-6 border-t border-ink-800">
+                        <div class="w-8 h-8 rounded-full bg-teal/20 border border-teal/30 flex items-center justify-center text-teal text-xs font-medium">LS</div>
+                        <span class="text-xs tracking-[0.15em] uppercase text-ink-500">Logística del Sur — Nave 1.500 m²</span>
+                    </footer>
+                </blockquote>
+                <blockquote class="reveal reveal-delay-2 bg-ink-900/40 border border-ink-800 p-8 flex flex-col">
+                    <div class="flex gap-1 mb-6">
+                        <i class="fa-solid fa-star text-teal text-xs"></i><i class="fa-solid fa-star text-teal text-xs"></i><i class="fa-solid fa-star text-teal text-xs"></i><i class="fa-solid fa-star text-teal text-xs"></i><i class="fa-solid fa-star text-teal text-xs"></i>
+                    </div>
+                    <p class="font-serif italic text-lg text-ink-200 leading-relaxed mb-8 flex-1">"Un solo interlocutor para todo. Cero vueltas entre gremios y proveedores."</p>
+                    <footer class="flex items-center gap-4 pt-6 border-t border-ink-800">
+                        <div class="w-8 h-8 rounded-full bg-teal/20 border border-teal/30 flex items-center justify-center text-teal text-xs font-medium">EV</div>
+                        <span class="text-xs tracking-[0.15em] uppercase text-ink-500">Estudio Vila — Local comercial</span>
+                    </footer>
+                </blockquote>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- CTA PRINCIPAL DE CIERRE -->
+    <!-- ============================================ -->
+    <section id="contacto" class="z-10 relative py-28 md:py-40 bg-[#050608] border-t border-ink-900 overflow-hidden">
+        <!-- Líneas verticales decorativas -->
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-teal/10 to-transparent"></div>
+            <div class="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-transparent via-teal/8 to-transparent"></div>
+        </div>
+        <!-- Glow de fondo centrado -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="w-[600px] h-[300px] rounded-full bg-teal/5 blur-[100px]"></div>
+        </div>
+
+        <div class="max-w-[90rem] mx-auto px-6 md:px-12 text-center relative z-10">
+            <p class="text-teal tracking-[0.35em] uppercase text-[10px] mb-8 reveal">Siguiente paso</p>
+            <h2 class="text-5xl md:text-6xl lg:text-7xl text-ink-200 font-extralight leading-[1.05] tracking-tight mb-6 reveal">
+                ¿Tenés un proyecto<br><span class="font-serif italic text-teal">en mente?</span>
+            </h2>
+            <p class="text-ink-500 font-light max-w-sm mx-auto mb-12 text-sm leading-relaxed reveal reveal-delay-1">
+                Contanos qué querés construir. En 24&nbsp;horas te respondemos con una consulta técnica sin cargo.
+            </p>
+            <div class="reveal reveal-delay-2">
+                <a href="https://wa.me/549XXXXXXXXXX"
+                   class="inline-flex items-center gap-4 bg-whatsapp text-ink-950 px-12 py-5 text-sm tracking-[0.2em] uppercase font-bold hover:bg-whatsapp/90 transition-all duration-300 shadow-[0_0_50px_rgba(37,211,102,0.25)] hover:shadow-[0_0_70px_rgba(37,211,102,0.4)]">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                    Iniciar conversación
+                </a>
+            </div>
+            <p class="text-ink-700 text-[10px] tracking-[0.2em] uppercase mt-8 reveal reveal-delay-3">Sin compromiso · Respuesta en menos de 24&nbsp;hs</p>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- CONTACTO / FOOTER -->
+    <!-- ============================================ -->
+    <footer class="bg-[#050608] border-t border-ink-900 z-10 relative">
+        <div class="max-w-[90rem] mx-auto px-6 md:px-12 py-14">
+
+            <!-- Fila principal: logo · navegación · redes -->
+            <div class="flex flex-col md:flex-row items-center justify-between gap-10 pb-10 border-b border-ink-900/60">
+                <a href="#" aria-label="Volver arriba">
+                    <img src="images/cearLogoCorporativo.png" alt="CEAR — Construcción Eficiente Argentina" class="logo-cear h-14 w-auto object-contain">
+                </a>
+                <nav class="flex flex-wrap justify-center gap-x-8 gap-y-4 text-xs tracking-[0.2em] uppercase text-ink-500">
+                    <a href="#servicios" class="hover:text-teal transition-colors">Servicios</a>
+                    <a href="#obras" class="hover:text-teal transition-colors">Obras</a>
+                    <a href="#proceso" class="hover:text-teal transition-colors">Proceso</a>
+                    <a href="#empresa" class="hover:text-teal transition-colors">Empresa</a>
+                </nav>
+                <div class="flex gap-6 text-lg text-ink-500">
+                    <a href="https://www.instagram.com/cear.constructora" target="_blank" rel="noopener" class="hover:text-teal transition-colors" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="hover:text-teal transition-colors" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+
+            <!-- Fila de datos de contacto -->
+            <div class="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-8 py-8 text-xs font-light text-ink-500">
+                <a href="mailto:info@cear.com.ar" class="hover:text-teal transition-colors">info@cear.com.ar</a>
+                <span class="hidden md:block w-1 h-1 rounded-full bg-ink-800"></span>
+                <a href="tel:+5493410000000" class="hover:text-teal transition-colors">+54 9 341 XXX-XXXX</a>
+                <span class="hidden md:block w-1 h-1 rounded-full bg-ink-800"></span>
+                <span>Rosario &amp; Gran Rosario, Santa Fe</span>
+                <span class="hidden md:block w-1 h-1 rounded-full bg-ink-800"></span>
+                <span>Lun a Vie — 08:00 a 17:00 hs</span>
+            </div>
+
+            <!-- Legales -->
+            <div class="border-t border-ink-900/60 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] tracking-[0.25em] uppercase text-ink-600">
+                <p>&copy; 2026 CEAR — Construcción Eficiente Argentina</p>
+                <p>Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botón flotante WhatsApp -->
+    <a href="https://wa.me/549XXXXXXXXXX" class="fixed bottom-6 right-6 md:bottom-10 md:right-10 z-[100] bg-ink-900/90 text-ink-200 border border-ink-800 rounded-full px-5 py-3 md:px-6 md:py-4 flex items-center gap-3 shadow-2xl hover:bg-whatsapp hover:text-ink-950 hover:border-whatsapp transition-all duration-300 backdrop-blur-md">
+        <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-whatsapp opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-whatsapp"></span>
+        </span>
+        <span class="text-xs tracking-[0.15em] font-medium hidden sm:block uppercase">Cotizá tu obra</span>
+        <i class="fa-brands fa-whatsapp text-lg sm:text-xl"></i>
+    </a>
+
+    <script>
+        // ---------- Menú móvil ----------
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.add('hidden')));
+
+        // ---------- Navbar con fondo al scrollear ----------
+        const nav = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            const scrolled = window.scrollY > 50;
+            nav.classList.toggle('bg-[#0b0e13]/95', scrolled);
+            nav.classList.toggle('backdrop-blur-md', scrolled);
+            nav.classList.toggle('border-ink-800', scrolled);
+            nav.classList.toggle('border-transparent', !scrolled);
+        }, { passive: true });
+
+        // ---------- Aparición al scroll ----------
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
+        }, { threshold: 0.15 });
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // ---------- Contadores animados ----------
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                const el = entry.target;
+                const target = +el.dataset.target;
+                const duration = 1600;
+                const start = performance.now();
+                const tick = (now) => {
+                    const p = Math.min((now - start) / duration, 1);
+                    el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))); // ease-out cúbico
+                    if (p < 1) requestAnimationFrame(tick);
+                };
+                requestAnimationFrame(tick);
+                counterObserver.unobserve(el);
+            });
+        }, { threshold: 0.5 });
+        document.querySelectorAll('.counter').forEach(el => counterObserver.observe(el));
+
+        // ---------- Proceso: línea que se dibuja y pasos que se encienden ----------
+        const procesoSection = document.getElementById('proceso');
+        const lineaFill = document.getElementById('proceso-linea');
+        const pasos = document.querySelectorAll('.proceso-step');
+
+        if (procesoSection && lineaFill) {
+            const procesoObserver = new IntersectionObserver(([entry]) => {
+                if (!entry.isIntersecting) return;
+                procesoObserver.disconnect();
+                // Doble rAF: asegura que el navegador renderizó el estado inicial antes de animar
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                    lineaFill.style.width = '100%';
+                    pasos.forEach((paso, i) => {
+                        setTimeout(() => paso.classList.add('lit'), 300 + i * 450);
+                    });
+                }));
+            }, { threshold: 0.1 });
+            procesoObserver.observe(procesoSection);
+        }
+
+        // ---------- Carrusel de obras: efecto cinemático ----------
+        const carousel = document.getElementById('obras-carousel');
+        const prevBtn = document.getElementById('prev-obra');
+        const nextBtn = document.getElementById('next-obra');
+        const progressBar = document.getElementById('obras-progress');
+        const counterEl = document.getElementById('obras-counter');
+
+        if (carousel && prevBtn && nextBtn) {
+            const cards = Array.from(carousel.querySelectorAll('.obra-card'));
+            const getGap = () => parseInt(getComputedStyle(carousel).gap) || 48;
+            const getScrollAmount = () => cards[0].offsetWidth + getGap();
+
+            // En desktop el snap CSS se quita (lo maneja el JS con snap magnético);
+            // en pantallas táctiles queda el snap nativo del navegador.
+            if (window.matchMedia('(pointer: fine)').matches) {
+                carousel.classList.remove('snap-x', 'snap-mandatory');
+            }
+
+            // --- Efecto cinemático ligado a la posición del scroll ---
+            // La tarjeta en foco (izquierda) se ve plena; las demás se atenúan y
+            // achican. Dentro de cada marco la foto se desplaza en sentido
+            // contrario (parallax), lo que hace visible el "paso" de cada imagen.
+            const updateEffects = () => {
+                const cRect = carousel.getBoundingClientRect();
+                cards.forEach(card => {
+                    const r = card.getBoundingClientRect();
+                    const t = Math.max(-1, Math.min(1, (r.left - cRect.left) / cRect.width));
+                    const focus = 1 - Math.min(1, Math.abs(t) * 1.4);
+                    card.querySelector('img').style.transform = `translateX(${(t * -9).toFixed(2)}%) scale(1.2)`;
+                    card.style.opacity = (0.4 + 0.6 * focus).toFixed(3);
+                    card.style.transform = `scale(${(0.95 + 0.05 * focus).toFixed(4)})`;
+                });
+                // Barra de progreso + contador
+                const max = carousel.scrollWidth - carousel.clientWidth;
+                if (progressBar) progressBar.style.width = (max > 0 ? (carousel.scrollLeft / max) * 100 : 0) + '%';
+                if (counterEl) {
+                    const idx = Math.min(cards.length, Math.max(1, Math.round(carousel.scrollLeft / getScrollAmount()) + 1));
+                    counterEl.textContent = String(idx).padStart(2, '0') + ' / ' + String(cards.length).padStart(2, '0');
+                }
+            };
+
+            let ticking = false;
+            carousel.addEventListener('scroll', () => {
+                if (ticking) return;
+                ticking = true;
+                requestAnimationFrame(() => { updateEffects(); ticking = false; });
+            }, { passive: true });
+            window.addEventListener('resize', updateEffects);
+            updateEffects();
+
+            // Auditoría UX: Motor de scroll custom optimizado con curva Quartic-Out
+            const customSmoothScroll = (el, amount, duration = 650) => { // 650ms para que el parallax se luzca en cada paso
+                const start = el.scrollLeft;
+                const startTime = performance.now();
+                
+                // Curva easeOutQuart: Arranque explosivo, frenado sedoso. Mucho más premium que easeInOut.
+                const easeOutQuart = t => 1 - Math.pow(1 - t, 4);
+
+                const animateScroll = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    el.scrollLeft = start + amount * easeOutQuart(progress);
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animateScroll);
+                    }
+                };
+                requestAnimationFrame(animateScroll);
+            };
+
+            const scrollNext = () => customSmoothScroll(carousel, getScrollAmount());
+            const scrollPrev = () => customSmoothScroll(carousel, -getScrollAmount());
+
+            nextBtn.addEventListener('click', scrollNext);
+            prevBtn.addEventListener('click', scrollPrev);
+
+            // Funcionalidad Drag-to-Scroll (Arrastrar con el mouse) para fluidez absoluta
+            let isDown = false, startX = 0, startScroll = 0, dragged = false;
+
+            // Ajuste magnético al soltar: tarjeta + gap (si no, el snap se corre)
+            const snapToNearest = () => {
+                const step = getScrollAmount();
+                const nearest = Math.round(carousel.scrollLeft / step) * step;
+                customSmoothScroll(carousel, nearest - carousel.scrollLeft, 300);
+            };
+
+            carousel.addEventListener('mousedown', (e) => {
+                isDown = true;
+                dragged = false;
+                startX = e.pageX;
+                startScroll = carousel.scrollLeft;
+                stopAutoplay();
+            });
+            carousel.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const walk = (e.pageX - startX) * 1.8;
+                if (Math.abs(walk) > 6) dragged = true;
+                carousel.scrollLeft = startScroll - walk;
+            });
+            carousel.addEventListener('mouseup', () => {
+                if (!isDown) return;
+                isDown = false;
+                if (dragged) snapToNearest();
+            });
+            // Solo pausa al hacer click/drag, no al pasar el mouse
+            carousel.addEventListener('mouseleave', () => {
+                if (isDown) { isDown = false; if (dragged) snapToNearest(); }
+            });
+            // Evita el click fantasma sobre los links al soltar un arrastre
+            carousel.addEventListener('click', (e) => {
+                if (dragged) { e.preventDefault(); e.stopPropagation(); dragged = false; }
+            }, true);
+
+            // Autoplay con pausa al interactuar
+            let autoplay = null;
+            const stopAutoplay = () => clearInterval(autoplay);
+            const startAutoplay = () => {
+                stopAutoplay(); // Prevenir múltiples intervalos
+                autoplay = setInterval(() => {
+                    if (carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 10) {
+                        customSmoothScroll(carousel, -carousel.scrollLeft, 800); 
+                    } else {
+                        scrollNext();
+                    }
+                }, 2500); // Intervalo más rápido (2.5s) según solicitud, bajo riesgo de conversión.
+            };
+            
+            startAutoplay();
+            carousel.addEventListener('touchstart', stopAutoplay, { passive: true });
+        }
+    </script>
+</body>
+</html>
